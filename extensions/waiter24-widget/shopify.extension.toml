@@ -1,0 +1,10 @@
+# Theme app extension — ships the storefront chat widget as an "app embed"
+# block the merchant toggles on in Online Store → Themes → Customize → App embeds.
+# Works on Online Store 2.0 themes without editing theme code.
+
+api_version = "2025-01"
+
+[[extensions]]
+name = "Waiter24 Chat"
+handle = "waiter24-widget"
+type = "theme"

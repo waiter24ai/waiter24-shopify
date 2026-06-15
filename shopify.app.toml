@@ -1,0 +1,47 @@
+# Shopify app configuration (managed by the Shopify CLI).
+# Fill client_id after creating the app in the Partner Dashboard, then run
+# `shopify app deploy` from this folder to push config + the theme extension.
+#
+# Docs: https://shopify.dev/docs/apps/tools/cli/configuration
+
+name = "Waiter24 AI Assistant"
+client_id = "REPLACE_WITH_CLIENT_ID"
+application_url = "https://waiter24.ai"
+embedded = true
+
+[access_scopes]
+scopes = "read_products,read_inventory"
+
+[auth]
+redirect_urls = [
+  "https://waiter24.ai/shopify/callback"
+]
+
+[webhooks]
+api_version = "2025-01"
+
+  # Operational webhooks are also registered at install via the Admin API
+  # (see AuthController::registerWebhooks); declaring them here keeps the CLI
+  # config authoritative for App Store review.
+  [[webhooks.subscriptions]]
+  topics = [ "products/create", "products/update", "products/delete" ]
+  uri = "https://waiter24.ai/api/shopify/webhook"
+
+  [[webhooks.subscriptions]]
+  topics = [ "inventory_levels/update", "app/uninstalled" ]
+  uri = "https://waiter24.ai/api/shopify/webhook"
+
+  # Mandatory GDPR/compliance webhooks (required for App Store).
+  [[webhooks.subscriptions]]
+  topics = [ "customers/data_request", "customers/redact", "shop/redact" ]
+  uri = "https://waiter24.ai/api/shopify/webhook"
+
+[app_proxy]
+# Optional: lets the storefront widget resolve its key by shop domain without
+# the merchant pasting it in the theme editor. Wire up later if desired.
+# url = "https://waiter24.ai/shopify/proxy"
+# subpath = "waiter24"
+# prefix = "apps"
+
+[pos]
+embedded = false

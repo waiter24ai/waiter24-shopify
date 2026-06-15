@@ -1,0 +1,34 @@
+{%- comment -%}
+  Waiter24 chat widget — app embed block.
+  Merchant enables it under Theme editor → App embeds and pastes the public
+  Widget Key from the Waiter24 dashboard. Loads the same widget.js used by the
+  WordPress plugin and the marketing site.
+{%- endcomment -%}
+
+{%- if block.settings.widget_key != blank -%}
+  <script
+    defer
+    src="{{ block.settings.widget_url }}"
+    data-key="{{ block.settings.widget_key }}"></script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Waiter24 Chat",
+  "target": "body",
+  "settings": [
+    {
+      "type": "text",
+      "id": "widget_key",
+      "label": "Widget Key",
+      "info": "Copy from your Waiter24 dashboard (Site Settings)."
+    },
+    {
+      "type": "text",
+      "id": "widget_url",
+      "label": "Widget script URL",
+      "default": "https://waiter24.ai/widget.js"
+    }
+  ]
+}
+{% endschema %}
