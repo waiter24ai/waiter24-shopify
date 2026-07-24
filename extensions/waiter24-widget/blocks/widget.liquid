@@ -9,7 +9,9 @@
   <script
     defer
     src="{{ block.settings.widget_url }}"
-    data-key="{{ block.settings.widget_key }}"></script>
+    data-key="{{ block.settings.widget_key }}"
+    {%- if block.settings.demo_mode %} data-demo-param="waiter24_demo"{% endif -%}
+  ></script>
 {%- endif -%}
 
 {% schema %}
@@ -28,6 +30,13 @@
       "id": "widget_url",
       "label": "Widget script URL",
       "default": "https://waiter24.ai/widget.js"
+    },
+    {
+      "type": "checkbox",
+      "id": "demo_mode",
+      "label": "Demo mode",
+      "default": false,
+      "info": "When on, the chat stays hidden for regular visitors and appears only on URLs that carry the ?waiter24_demo=1 parameter. Preview it by opening your storefront with that parameter, e.g. https://your-store.myshopify.com/?waiter24_demo=1 — the parameter is remembered for the session and re-applied to in-chat links."
     }
   ]
 }
