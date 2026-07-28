@@ -17,7 +17,7 @@ does not allow merchant-hosted code. The app is therefore split in two:
    `read_products,read_inventory` → we exchange the code for a permanent Admin
    API token (stored encrypted in `shopify_stores`) and register webhooks.
 2. **Link tenant.** In the embedded admin UI the merchant pastes their
-   **import token** (Waiter24 dashboard → Widget Settings → Menu auto-import).
+   **import token** (Waiter24 dashboard → Site Integration → Menu auto-import).
    That links the Shopify store to the tenant and triggers the first sync.
 3. **Sync.** `MenuSyncService` reads products via Admin GraphQL, maps them to the
    neutral import schema (`ProductMapper`), and calls `MenuImportService`
@@ -29,6 +29,36 @@ does not allow merchant-hosted code. The app is therefore split in two:
 5. **Widget.** The theme app extension adds a "Waiter24 Chat" app embed block the
    merchant toggles on in the theme editor; it loads `widget.js` with the public
    widget key.
+
+## Shortcut: connect a single store without a Partner app
+
+The OAuth flow above needs a Partner app and a deployed public app URL. To
+connect one store (a test store, or a merchant you onboard by hand) you can skip
+all of it — the merchant creates a **custom app inside their own store** and
+hands you its Admin API token:
+
+1. Shopify admin → **Settings → Apps and sales channels → Develop apps →
+   Create an app**.
+2. **Configure Admin API scopes** → tick `read_products` and `read_inventory` →
+   **Save**.
+3. **Install app** → reveal and copy the **Admin API access token** (`shpat_…`,
+   shown once).
+4. On the Waiter24 server:
+   ```bash
+   php artisan shopify:connect my-store.myshopify.com \
+       --token=shpat_xxx --tenant=<tenant slug, id or import_token>
+   ```
+   The command validates the token against the Admin API, stores it encrypted,
+   links the tenant, imports the catalog inline and prints the `<script>`
+   snippet for the widget. `--queue` syncs via the queue instead, `--no-sync`
+   only saves the credentials.
+5. Widget: without the Partner app there is no app-embed block, so paste the
+   printed `<script defer src=".../widget.js" data-key="...">` before `</body>`
+   in **Online Store → Themes → Edit code → `layout/theme.liquid`**.
+
+Trade-off: a custom app cannot register webhooks (those are created during
+OAuth), so the catalog refreshes on the daily `shopify:resync` and on manual
+`shopify:connect` / **Sync now** runs — not in real time.
 
 ## Requirements
 
