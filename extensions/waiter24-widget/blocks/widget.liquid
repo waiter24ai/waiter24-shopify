@@ -8,8 +8,8 @@
 {%- if block.settings.widget_key != blank -%}
   <script
     defer
-    src="{{ block.settings.widget_url }}"
-    data-key="{{ block.settings.widget_key }}"
+    src="{{ block.settings.widget_url | escape }}"
+    data-key="{{ block.settings.widget_key | strip | escape }}"
     {%- if block.settings.demo_mode %} data-demo-param="waiter24_demo"{% endif -%}
   ></script>
 {%- endif -%}
